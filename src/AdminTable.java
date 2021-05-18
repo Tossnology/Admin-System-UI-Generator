@@ -7,9 +7,29 @@ public class AdminTable {
     private String tableName;
     private List<String[]> properties;
     private List<AdminTable> subTables;
-    private List<String> operations;
+    private List<String[]> operations;
     private boolean editEnable;
     private boolean deleteEnable;
+    private boolean sub;
+
+    public AdminTable(String htmlId, String tableName, List<String[]> properties, List<AdminTable> subTables, List<String[]> operations, boolean editEnable, boolean deleteEnable, boolean sub) {
+        this.htmlId = htmlId;
+        this.tableName = tableName;
+        this.properties = properties;
+        this.subTables = subTables;
+        this.operations = operations;
+        this.editEnable = editEnable;
+        this.deleteEnable = deleteEnable;
+        this.sub = sub;
+    }
+
+    public boolean isSub() {
+        return sub;
+    }
+
+    public void setSub(boolean sub) {
+        this.sub = sub;
+    }
 
     public String getHtmlId() {
         return htmlId;
@@ -43,15 +63,15 @@ public class AdminTable {
         this.subTables = subTables;
     }
 
-    public List<String> getOperations() {
+    public List<String[]> getOperations() {
         return operations;
     }
 
-    public void setOperations(List<String> operations) {
+    public void setOperations(List<String[]> operations) {
         this.operations = operations;
     }
 
-    public AdminTable(String tableName, List<String[]> properties, List<AdminTable> subTables, List<String> operations, boolean editEnable, boolean deleteEnable) {
+    public AdminTable(String tableName, List<String[]> properties, List<AdminTable> subTables, List<String[]> operations, boolean editEnable, boolean deleteEnable) {
         this.tableName = tableName;
         this.properties = properties;
         this.subTables = subTables;
@@ -60,7 +80,7 @@ public class AdminTable {
         this.deleteEnable = deleteEnable;
     }
 
-    public AdminTable(String htmlId, String tableName, List<String[]> properties, List<AdminTable> subTables, List<String> operations, boolean editEnable, boolean deleteEnable) {
+    public AdminTable(String htmlId, String tableName, List<String[]> properties, List<AdminTable> subTables, List<String[]> operations, boolean editEnable, boolean deleteEnable) {
         this.htmlId = htmlId;
         this.tableName = tableName;
         this.properties = properties;

@@ -84,6 +84,7 @@ public class Generator {
 
         if (table.getSubTables() != null) {
             for (int i = 0; i < table.getSubTables().size(); i++) {
+                table.getSubTables().get(i).setSub(true);
                 generateHTML(table.getSubTables().get(i));
             }
         }
@@ -307,13 +308,21 @@ public class Generator {
         str += "</script>";
         str += "<!--===============添加、批量删除工具条 end  ===================-->";
 
-
-        for (int i = 0; i < table.getSubTables().size(); i++) {
-            str += "<script type=\"text/html\" id=\"" + table.getSubTables().get(i).getHtmlId() + "\">";
-            str += "    <a class=\"layui-btn layui-btn-sm\" lay-event=\"add\">详情</a>";
-            str += "</script>";
+        if (table.getSubTables() != null) {
+            for (int i = 0; i < table.getSubTables().size(); i++) {
+                str += "<script type=\"text/html\" id=\"" + table.getSubTables().get(i).getHtmlId() + "\">";
+                str += "    <a class=\"layui-btn layui-btn-xs layui-btn-normal\" lay-event=\"goto" + table.getSubTables().get(i).getHtmlId().substring(0,1).toUpperCase() + table.getSubTables().get(i).getHtmlId().substring(1) + "\">详情</a>";
+                str += "</script>";
+            }
         }
 
+        if (table.getOperations() != null) {
+            str += "<script type=\"text/html\" id=\"" + "operations" + "\">";
+            for (int i = 0; i < table.getOperations().size(); i++) {
+                str += "    <a class=\"layui-btn layui-btn-xs layui-btn-normal\" lay-event=\"" + table.getOperations().get(i)[0] + "\">" + table.getOperations().get(i)[1] + "</a>";
+            }
+            str += "</script>";
+        }
 
         str += "<!--===============删除、修改工具条 start===================-->";
         str += "<script type=\"text/html\" id=\"toolbar1\">";
@@ -329,6 +338,12 @@ public class Generator {
 
         str += "<script>";
         str += "    layui.use([\"form\",\"layer\",\"table\"],function () {";
+        if (table.isSub()) {
+            str += "var loc=location.href;";
+            str += "var n1=loc.length;";
+            str += "var n2=loc.indexOf(\"=\");";
+            str += "var id=decodeURI(loc.substr(n2+1, n1-n2));";
+        }
         str += "        var form = layui.form;";
         str += "        var layer = layui.layer;";
         str += "        var table = layui.table;";
@@ -338,7 +353,11 @@ public class Generator {
         str += "            elem:\"#" + table.getHtmlId() + "\",";
         str += "            limit:5,";
         str += "            limits:[5,10,15],";
-        str += "            url:\"" + table.getHtmlId() + "/select.do\",";
+        if (table.isSub()) {
+            str += "            url:\"" + table.getHtmlId() + "/select.do?id=\" + id,";
+        } else {
+            str += "            url:\"" + table.getHtmlId() + "/select.do\",";
+        }
         str += "            page:true,";
         str += "            toolbar:\"#toolbar2\",";
         str += "            cols:[[";
@@ -346,10 +365,16 @@ public class Generator {
         for (int i = 0; i < table.getProperties().size(); i++) {
             str += "                {field:\"" + table.getProperties().get(i)[0] + "\",title:\"" + table.getProperties().get(i)[1] + "\"},";
         }
-        for (int i = 0; i < table.getSubTables().size(); i++) {
-            str += "                {field:\"" + table.getSubTables().get(i).getHtmlId() + "\",title:\"" + table.getSubTables().get(i).getTableName() + "\"},";
+
+        if (table.getSubTables() != null) {
+            for (int i = 0; i < table.getSubTables().size(); i++) {
+                str += "                {title:\"" + table.getSubTables().get(i).getTableName() + "\",toolbar:'#" + table.getSubTables().get(i).getHtmlId() + "'},";
+            }
         }
-        str += "                {title:\"操作\",toolbar:'#toolbar1'}";
+        if (table.getOperations() != null) {
+            str += "                {title:\"操作\",toolbar:'#operations'},";
+        }
+        str += "                {title:\"修改/删除\",toolbar:'#toolbar1'}";
         str += "            ]]";
         str += "        });";
         str += "";
@@ -440,11 +465,23 @@ public class Generator {
         str += "                                table.reload('" + table.getHtmlId() + "');";
         str += "                            }";
         str += "                        }";
-        str += "";
         str += "                    })";
         str += "                })";
-        str += "";
         str += "            }";
+        if (table.getSubTables() != null) {
+            for (int i = 0; i < table.getSubTables().size(); i++) {
+                str += "if (obj.event == 'goto" + table.getSubTables().get(i).getHtmlId().substring(0,1).toUpperCase() + table.getSubTables().get(i).getHtmlId().substring(1) + "') {";
+                str += "location.href='" + table.getSubTables().get(i).getTableName() + ".html?'+'id=' + encodeURI(obj.data.id);";
+                str += "        }";
+            }
+        }
+        if (table.getOperations() != null) {
+            for (int i = 0; i < table.getOperations().size(); i++) {
+                str += "if (obj.event == '" + table.getOperations().get(i)[0] + "') {";
+                str += "            console.log(obj.data.id + \"" + "    " + table.getOperations().get(i)[0] + "\")";
+                str += "        }";
+            }
+        }
         str += "        });";
         str += "        form.on('submit(addSubmit)',function () {";
         str += "";

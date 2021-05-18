@@ -28,7 +28,8 @@ public class Test {
         properties2.add(new String[]{"number", "库存数量"});
         List<AdminTable> subtables2 = new ArrayList<>();
         subtables2.add(imageAdmin);
-        List<String> operations2 = Arrays.asList("设置属性");
+        List<String[]> operations2 = new ArrayList<>();
+        operations2.add(new String[]{"setProperty", "设置属性"});
         AdminTable productAdmin = new AdminTable("产品管理", properties2, subtables2, operations2, true, true);
         productAdmin.setHtmlId("product");
 
@@ -58,7 +59,9 @@ public class Test {
         properties5.add(new String[]{"payTime", "支付时间"});
         properties5.add(new String[]{"deliverTime", "发货时间"});
         properties5.add(new String[]{"confirmTime", "确认收货时间"});
-        List<String> operations5 = Arrays.asList("查看详情", "发货");
+        List<String[]> operations5 = new ArrayList<>();
+        operations5.add(new String[]{"details", "查看详情"});
+        operations5.add(new String[]{"deliver", "发货"});
         AdminTable orderAdmin = new AdminTable("订单管理", properties5, null, operations5, false, false);
         orderAdmin.setHtmlId("order");
 
