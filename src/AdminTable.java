@@ -1,10 +1,11 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class AdminTable {
     private String htmlId;
     private String tableName;
-    private List<String> properties;
+    private List<String[]> properties;
     private List<AdminTable> subTables;
     private List<String> operations;
     private boolean editEnable;
@@ -26,11 +27,11 @@ public class AdminTable {
         this.tableName = tableName;
     }
 
-    public List<String> getProperties() {
+    public List<String[]> getProperties() {
         return properties;
     }
 
-    public void setProperties(List<String> properties) {
+    public void setProperties(List<String[]> properties) {
         this.properties = properties;
     }
 
@@ -50,7 +51,7 @@ public class AdminTable {
         this.operations = operations;
     }
 
-    public AdminTable(String tableName, List<String> properties, List<AdminTable> subTables, List<String> operations, boolean editEnable, boolean deleteEnable) {
+    public AdminTable(String tableName, List<String[]> properties, List<AdminTable> subTables, List<String> operations, boolean editEnable, boolean deleteEnable) {
         this.tableName = tableName;
         this.properties = properties;
         this.subTables = subTables;
@@ -59,7 +60,7 @@ public class AdminTable {
         this.deleteEnable = deleteEnable;
     }
 
-    public AdminTable(String htmlId, String tableName, List<String> properties, List<AdminTable> subTables, List<String> operations, boolean editEnable, boolean deleteEnable) {
+    public AdminTable(String htmlId, String tableName, List<String[]> properties, List<AdminTable> subTables, List<String> operations, boolean editEnable, boolean deleteEnable) {
         this.htmlId = htmlId;
         this.tableName = tableName;
         this.properties = properties;

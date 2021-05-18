@@ -245,7 +245,7 @@ public class Generator {
         str += "<body>";
         str += "<div class=\"layui-form\">";
         str += "    <!-- 此处可以编写个性化搜索 -->";
-        str += "    <lable class=\"layui-form-label\">" + table.getProperties().get(0) + "</lable>";
+        str += "    <lable class=\"layui-form-label\">" + table.getProperties().get(0)[0] + "</lable>";
         str += "    <div class=\"layui-inline\">";
         str += "        <input class=\"layui-input\" id=\"searchName\" type=\"text\">";
         str += "    </div>";
@@ -261,11 +261,11 @@ public class Generator {
         str += "";
         str += "<!---------------------添加科室表格 start------------------------------->";
         str += "<form class=\"layui-form\" id=\"add" + table.getHtmlId().substring(0,1).toUpperCase()+table.getHtmlId().substring(1) + "\" style=\"display: none;padding: 20px 30px 0 0\" lay-filter=\"insertFilter\">";
-        for (int i = 1; i < table.getProperties().size(); i++) {
+        for (int i = 0; i < table.getProperties().size(); i++) {
             str += "    <div class=\"layui-form-item\">";
-            str += "        <label class=\"layui-form-label\">" + table.getProperties().get(i) + "</label>";
+            str += "        <label class=\"layui-form-label\">" + table.getProperties().get(i)[1] + "</label>";
             str += "        <div class=\"layui-input-inline\">";
-            str += "            <input type=\"text\" name=\"" + table.getProperties().get(i) + "\" placeholder=\"请输入" + table.getProperties().get(i) + "\" autocomplete=\"off\" class=\"layui-input\">";
+            str += "            <input type=\"text\" name=\"" + table.getProperties().get(i)[1] + "\" placeholder=\"请输入" + table.getProperties().get(i)[1] + "\" autocomplete=\"off\" class=\"layui-input\">";
             str += "        </div>";
             str += "    </div>";
         }
@@ -279,11 +279,11 @@ public class Generator {
         str += "<!---------------------添加文章表格 end------------------------------->";
         str += "<!---------------------修改文章表格 start------------------------------->";
         str += "<form class=\"layui-form\" id=\"update" + table.getHtmlId().substring(0,1).toUpperCase()+table.getHtmlId().substring(1) + "\" style=\"display: none;padding: 20px 30px 0 0\" lay-filter=\"updateFilter\">";
-        for (int i = 1; i < table.getProperties().size(); i++) {
+        for (int i = 0; i < table.getProperties().size(); i++) {
             str += "    <div class=\"layui-form-item\">";
-            str += "        <label class=\"layui-form-label\">" + table.getProperties().get(i) + "</label>";
+            str += "        <label class=\"layui-form-label\">" + table.getProperties().get(i)[1] + "</label>";
             str += "        <div class=\"layui-input-inline\">";
-            str += "            <input type=\"text\" name=\"" + table.getProperties().get(i) + "\" placeholder=\"请输入" + table.getProperties().get(i) + "\" autocomplete=\"off\" class=\"layui-input\">";
+            str += "            <input type=\"text\" name=\"" + table.getProperties().get(i)[1] + "\" placeholder=\"请输入" + table.getProperties().get(i)[1] + "\" autocomplete=\"off\" class=\"layui-input\">";
             str += "        </div>";
             str += "    </div>";
         }
@@ -296,18 +296,37 @@ public class Generator {
         str += "</form>";
         str += "<!---------------------修改文章表格 end------------------------------->";
         str += "";
+
+
         str += "<!--===============添加、批量删除工具条 start===================-->";
         str += "<script type=\"text/html\" id=\"toolbar2\">";
         str += "    <a class=\"layui-btn layui-btn-sm\" lay-event=\"add\">添加</a>";
-        str += "    <a class=\"layui-btn layui-btn-sm layui-btn-danger\" lay-event=\"deleteMany\">批量删除</a>";
+        if (table.isDeleteEnable()) {
+            str += "    <a class=\"layui-btn layui-btn-sm layui-btn-danger\" lay-event=\"deleteMany\">批量删除</a>";
+        }
         str += "</script>";
         str += "<!--===============添加、批量删除工具条 end  ===================-->";
+
+
+        for (int i = 0; i < table.getSubTables().size(); i++) {
+            str += "<script type=\"text/html\" id=\"" + table.getSubTables().get(i).getHtmlId() + "\">";
+            str += "    <a class=\"layui-btn layui-btn-sm\" lay-event=\"add\">详情</a>";
+            str += "</script>";
+        }
+
+
         str += "<!--===============删除、修改工具条 start===================-->";
         str += "<script type=\"text/html\" id=\"toolbar1\">";
-        str += "    <a class=\"layui-btn layui-btn-xs\" lay-event=\"update\">修改</a>";
-        str += "    <a class=\"layui-btn layui-btn-xs layui-btn-danger\" lay-event=\"delete\">删除</a>";
+        if (table.isEditEnable()) {
+            str += "    <a class=\"layui-btn layui-btn-xs\" lay-event=\"update\">修改</a>";
+        }
+        if (table.isDeleteEnable()) {
+            str += "    <a class=\"layui-btn layui-btn-xs layui-btn-danger\" lay-event=\"delete\">删除</a>";
+        }
         str += "</script>";
         str += "<!--===============删除、修改工具条 end   ===================-->";
+
+
         str += "<script>";
         str += "    layui.use([\"form\",\"layer\",\"table\"],function () {";
         str += "        var form = layui.form;";
@@ -325,7 +344,10 @@ public class Generator {
         str += "            cols:[[";
         str += "                {type:\"checkbox\"},";
         for (int i = 0; i < table.getProperties().size(); i++) {
-            str += "                {field:\"" + table.getProperties().get(i) + "\",title:\"" + table.getProperties().get(i) + "\"},";
+            str += "                {field:\"" + table.getProperties().get(i)[0] + "\",title:\"" + table.getProperties().get(i)[1] + "\"},";
+        }
+        for (int i = 0; i < table.getSubTables().size(); i++) {
+            str += "                {field:\"" + table.getSubTables().get(i).getHtmlId() + "\",title:\"" + table.getSubTables().get(i).getTableName() + "\"},";
         }
         str += "                {title:\"操作\",toolbar:'#toolbar1'}";
         str += "            ]]";
@@ -335,7 +357,7 @@ public class Generator {
         str += "";
         str += "            table.reload('" + table.getHtmlId() + "',{";
         str += "                where:{";
-        str += "                    " + table.getProperties().get(0) + ":$(\"#searchName\").val(),";
+        str += "                    " + "id"+ ":$(\"#searchName\").val(),";
         str += "                },";
         str += "                page:{";
         str += "                    curr:1";
